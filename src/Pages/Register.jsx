@@ -1,32 +1,46 @@
-import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { authContext } from "../HomeLayout/AuthProvider";
 
 
 
 const Register = () => {
-    const {createUser,setUser}=useContext(authContext)
-    const formHandler=(e)=>{
+    const { createUser, setUser,updateUserProfile } = useContext(authContext)
+    const [error, setError] = useState({})
+    const navigate = useNavigate()
+    const formHandler = (e) => {
         e.preventDefault()
         // console.log(e.target.name.name)
         const from = new FormData(e.target)
         // console.log(from)
         const name = from.get("name")
+        if (name.length < 5) {
+            setError({ ...error, name: "must be more than 5 character long" })
+            return
+        }
         const photoUrl = from.get('photo url')
         const email = from.get("email")
         const password = from.get("password")
         // console.log(name,photoUrl,email,password)
-        createUser(email,password)
-        .then((result)=>{
-            const user=result.user
-            setUser(user)
-            // console.log(user)
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-             console.log(errorCode,errorMessage)
-          });
+        createUser(email, password)
+            .then((result) => {
+                const user = result.user
+                setUser(user)
+                console.log(user)
+                updateUserProfile({displayName:name,photoURL:photoUrl})
+                .then(()=>{
+                    navigate("/")
+                })
+                .catch((err)=>{
+                    console.log(err)
+                })
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                //  console.log(errorCode,errorMessage)
+            });
+           
     }
     return (
         <div className="flex items-center justify-center min-h-screen">
@@ -40,6 +54,13 @@ const Register = () => {
                         </label>
                         <input type="text" name="name" placeholder="Name" className="input input-bordered" required />
                     </div>
+                    {
+                        error.name && (
+                            <label className="text-red-500 label">
+                                 {error.name}
+                            </label>
+                        )
+                    }
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text">Photo url</span>

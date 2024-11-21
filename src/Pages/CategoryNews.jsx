@@ -3,8 +3,10 @@ import NewsCard from "./NewsCard";
 
 const CategoryNews = () => {
   const {data:news} = useLoaderData()
+  // console.log(import.meta.env.VITE_a)
   // console.log(data)
   return (
+    
     <div>
       <div className="pl-4">
         <h1 className="font-semibold ">Dragon News Home</h1>

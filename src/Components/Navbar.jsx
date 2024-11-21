@@ -13,9 +13,15 @@ const Navbar = () => {
                 <NavLink to={"/career"}>Career</NavLink>
             </div>
             <div className="flex items-center space-x-4 login">
-                 <div>
+                 {
+                    user && user?.email?<div className="flex flex-col items-center pt-2">
+                    <img src={user.photoURL} className="w-[50px]  rounded-full" />
+                    <p>{user.displayName}</p>
+                 </div>:<div>
                     <img src={userLogo}  />
                  </div>
+                 }
+                 
                  <div>
                     {
                         user && user?.email?
